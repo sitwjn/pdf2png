@@ -1,0 +1,243 @@
+<!--
+MIT License
+
+Copyright (c) 2024 Jianai Wang
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+<html>
+	<head>
+		<title>Pdf2Png Api Example Page</title>
+		<style type="text/css">
+		.layout {
+		  margin: 0;
+		  padding: 0;
+		  width: 100%;
+		  text-align: center;
+		}
+		
+		.drop-container {
+		  position: relative; 
+		  display: inline-block;
+		  gap: 10px;
+		  flex-direction: column;
+		  justify-content: center;
+		  align-items: center;
+		  /*height: 200px;*/
+		  padding: 5px;
+		  border-radius: 10px;
+		  border: 2px dashed #555;
+		  color: #444;
+		  cursor: pointer;
+		  transition: background .2s ease-in-out, border .2s ease-in-out;
+		}
+
+		.drop-container:hover {
+		  background: #eee;
+		  border-color: #111;
+		}
+
+		.drop-container:hover .drop-title {
+		  color: #222;
+		}
+		
+		
+		input[type=file] {
+		  width: 250px;
+		  max-width: 100%;
+		  color: #444;
+		  padding: 5px;
+		  background: #fff;
+		  border-radius: 10px;
+		  border: 1px solid #555;
+		}
+		
+		select {
+		  max-width: 100%;
+		  color: #444;
+		  padding: 5px;
+		  background: #fff;
+		  border-radius: 10px;
+		  border: 1px solid #555;
+		}
+		
+		</style>
+		<style type="text/css">
+		/* Center the loader */
+		#loader {
+		  position: absolute;
+		  left: 50%;
+		  top: 50%;
+		  z-index: 1;
+		  width: 120px;
+		  height: 120px;
+		  margin: -76px 0 0 -76px;
+		  border: 16px solid #f3f3f3;
+		  border-radius: 50%;
+		  border-top: 16px solid #3498db;
+		  -webkit-animation: spin 2s linear infinite;
+		  animation: spin 2s linear infinite;
+		}
+
+		@-webkit-keyframes spin {
+		  0% { -webkit-transform: rotate(0deg); }
+		  100% { -webkit-transform: rotate(360deg); }
+		}
+
+		@keyframes spin {
+		  0% { transform: rotate(0deg); }
+		  100% { transform: rotate(360deg); }
+		}
+
+		/* Add animation to "page content" */
+		.animate-bottom {
+		  position: relative;
+		  -webkit-animation-name: animatebottom;
+		  -webkit-animation-duration: 1s;
+		  animation-name: animatebottom;
+		  animation-duration: 1s
+		}
+
+		@-webkit-keyframes animatebottom {
+		  from { bottom:-100px; opacity:0 } 
+		  to { bottom:0px; opacity:1 }
+		}
+
+		@keyframes animatebottom { 
+		  from{ bottom:-100px; opacity:0 } 
+		  to{ bottom:0; opacity:1 }
+		}
+		</style>
+		<script type="text/javascript">
+			function setProgress(running) {
+				if (running) {
+					document.getElementById("divExample").style.display = "none";
+					document.getElementById("loader").style.display = "inline-block";
+				} else {
+					document.getElementById("divExample").style.display = "inline-block";
+					document.getElementById("loader").style.display = "none";
+				}
+			}
+			
+			function upload() {
+				var files = document.getElementById("file").files;
+				if (files[0].name.toLowerCase().indexOf('.pdf') == -1) {
+					alert(files[0].name + ' is not PDF format');
+					return;
+				}
+				var formData = new FormData();
+				formData.append("file", files[0]);
+				formData.append("resolution", document.getElementById("resolution").value);
+				var filename = files[0].name.substring(0, files[0].name.lastIndexOf('.')) + '.zip';
+				ajaxPost('/upload', formData, filename);
+			}
+			
+			function uploads() {
+				var files = document.getElementById("files").files;
+				var formData = new FormData();
+				for (const file of files) {
+					if (file.name.toLowerCase().indexOf('.pdf') == -1) {
+						alert(file.name + ' is not PDF format');
+						return;
+					}
+					formData.append("files", file);
+				}
+				formData.append("resolution", document.getElementById("resolutions").value);
+				ajaxPost('/uploads', formData, 'files.zip')
+			}
+			
+			function ajaxPost(url, formData, filename) {
+				setProgress(true);
+				var xhr = new XMLHttpRequest();
+				xhr.open('POST', url, true);
+				xhr.responseType = 'blob';
+				xhr.onload = function (){
+					setProgress(false);
+					if (xhr.readyState = 4 && xhr.status === 200) {
+						// success
+						downloadFile(xhr, filename);
+					} else {
+						// error
+						alert('upload failed');
+					}
+				}
+				xhr.send(formData);
+			}
+			
+			function downloadFile(xhr, filename) {
+				var blob = xhr.response;
+				
+				if (blob.size == 0) {
+					//error
+					alert('upload failed');
+				} else {
+					var elink = document.createElement("a");
+					elink.download = filename;
+					elink.style.display = "none";
+					elink.href = URL.createObjectURL(blob);
+					document.body.appendChild(elink);
+					elink.click();
+					document.body.removeChild(elink);
+				}
+			}
+			
+			window.onload = function() {
+				setProgress(false);
+			} 
+		</script>
+	<body>
+		<div id="loader"></div>
+		<div id="divExample" class="layout">
+			<h1 align="center">
+			  Pdf2PngSvc
+			  <br>
+			</h1>
+			<h4 align="center">An instance of restful API for converting PDF format file(s) to PNG format image(s).</h4>
+			
+			<hr/>
+			<h3 style="color:blue;">Single File Sample:</h3>
+			<div class="drop-container">
+				
+				<form id="frmUpload" action="/upload" method="post" enctype="multipart/form-data">
+				  <input type="file" id="file" name="file">
+				  <select class="custom-select" id="resolution" name="resolution">
+					<option value="100">100</option>
+					<option value="200">200</option>
+					<option value="300">300</option>
+					<option value="400">400</option>
+				  </select><span>&nbsp;px</span>
+				  <input type="button" value="Upload" onclick="upload()">
+				</form>
+			</div>
+			<h3 style="color:blue;">Multi Files Sample:</h3>
+			<div class="drop-container">
+				<form id="frmUpload" action="/uploads" method="post" enctype="multipart/form-data">
+				  <input type="file" id="files" name="files" multiple>
+				  <select class="custom-select" id="resolutions" name="resolutions">
+					<option value="100">100</option>
+					<option value="200">200</option>
+					<option value="300">300</option>
+					<option value="400">400</option>
+				  </select><span>&nbsp;px</span>
+				  <input type="button" value="Uploads" onclick="uploads()">
+				</form>
+			</div>
+		</div>
+	</body>
+</html>
