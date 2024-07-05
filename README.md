@@ -30,23 +30,23 @@ To clone and run this instance, you'll need [Git](https://git-scm.com) and [Pyth
 
 ``` bash
 # install Flask and pdfplumber
-$ pip install --upgrade pip setuptools
-$ pip install pdfplumber Flask waitress Flask-Markdown
+pip install --upgrade pip setuptools
+pip install pdfplumber Flask waitress Flask-Markdown
 ```
 
 Download python file of [pdf2png.py](https://github.com/sitwjn/pdf2png/blob/main/pdf2png.py) to a directory in local. In this guid, The file put into directory of /var/flask for example:
 
 ``` bash
 # create directory to save souce files
-$ mkdir /var/flask
-$ cd /var/flask
-$ wget https://raw.githubusercontent.com/sitwjn/pdf2png/main/pdf2png.py 
+mkdir /var/flask
+cd /var/flask
+wget https://raw.githubusercontent.com/sitwjn/pdf2png/main/pdf2png.py 
 ```
 
 To start pdf2png service by command:
 
 ``` bash
-$ python pdf2png.py
+python pdf2png.py
 ```
 
 The definition of upload single file API in [pdf2png.py](https://github.com/sitwjn/pdf2png/blob/main/pdf2png.py) as below:
@@ -66,8 +66,8 @@ def upload_files():
 If you want to get read me info and example about how to use this python script in detail. There are two files must be download into directory of /var/flask in advance:
 
 ``` bash
-$ wget https://raw.githubusercontent.com/sitwjn/pdf2png/main/README.md
-$ wget https://raw.githubusercontent.com/sitwjn/pdf2png/main/example.html
+wget https://raw.githubusercontent.com/sitwjn/pdf2png/main/README.md
+wget https://raw.githubusercontent.com/sitwjn/pdf2png/main/example.html
 ```
 
 > **Note**
@@ -140,7 +140,7 @@ ENTRYPOINT python pdf2png.py ${ENV_HOME_PATH}
 The image build command such as below for example:
 
 ``` bash
-$ docker build --build-arg "HOME_PATH=/var/flask/" -t pdf2png:1.0.0 . -f Dockerfile
+docker build --build-arg "HOME_PATH=/var/flask/" -t pdf2png:1.0.0 . -f Dockerfile
 ```
 
 > **Note**
