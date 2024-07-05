@@ -140,7 +140,7 @@ ENTRYPOINT python pdf2png.py ${ENV_HOME_PATH}
 The image build command such as below for example:
 
 ``` bash
-$ docker build --build-arg "HOME_PATH=/var/flask/" -t alpine-python3.9:pdf2png . -f Dockerfile
+$ docker build --build-arg "HOME_PATH=/var/flask/" -t pdf2png:1.0.0 . -f Dockerfile
 ```
 
 > **Note**
