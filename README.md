@@ -46,7 +46,7 @@ wget https://raw.githubusercontent.com/sitwjn/pdf2png/main/pdf2png.py
 To start pdf2png service by command:
 
 ``` bash
-python pdf2png.py
+python pdf2png.py /var/flask/
 ```
 
 The definition of upload single file API in [pdf2png.py](https://github.com/sitwjn/pdf2png/blob/main/pdf2png.py) as below:
