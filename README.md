@@ -37,7 +37,7 @@ pip install pdfplumber Flask waitress Flask-Markdown
 Download python file of [pdf2png.py](https://github.com/sitwjn/pdf2png/blob/main/pdf2png.py) to a directory in local. In this guid, The file put into directory of /var/flask for example:
 
 ``` bash
-# create directory to save souce files
+# create directory to save source files
 mkdir /var/flask
 cd /var/flask
 wget https://raw.githubusercontent.com/sitwjn/pdf2png/main/pdf2png.py 
